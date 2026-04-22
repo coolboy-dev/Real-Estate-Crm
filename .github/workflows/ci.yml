@@ -18,11 +18,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
-      - run: cd server && npm ci
+      - run: cd server && npm install
       - run: cd server && npx jest --no-coverage
         env:
           DATABASE_URL: postgres://crm:crm_pass@localhost:5432/realestate_crm
-          JWT_SECRET: test_secret_32chars_minimum_len
+          JWT_SECRET: test_secret_key_for_ci_pipeline_automation
+          JWT_EXPIRES_IN: 1d
 
   frontend:
     runs-on: ubuntu-latest
@@ -30,5 +31,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: "20" }
-      - run: cd client && npm ci
+      - run: cd client && npm install --legacy-peer-deps
       - run: cd client && npx vitest run

@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-deep: #1a1a1a;
+  --color-brand-stone: #f5f5f0;
+  --color-brand-gold: #c5a059;
+  --color-brand-emerald: #1e3a34;
+  
+  --font-display: "Playfair Display", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-stone text-brand-deep font-sans antialiased;
+  }
+  
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+}
+
+/* Custom scrollbar for an industrial feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d1cc;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c5a059;
+}
+
+/* Sophisticated glass effect */
+.glass {
+  @apply bg-white/70 backdrop-blur-md border border-white/20;
+}
+
+/* Card hover effect */
+.hover-lift {
+  @apply transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-deep/5;
+}

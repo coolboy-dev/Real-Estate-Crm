@@ -41,15 +41,41 @@ app.use("/api/reports", reportRoutes);
 
 app.use(errorHandler);
 
-const isMain = process.argv[1] && (fileURLToPath(import.meta.url) === path.resolve(process.argv[1]));
+import { User } from "./models/User.js";
+import bcrypt from "bcryptjs";
 
-if (isMain) {
-  connectDB().then(() => {
-    startFollowUpJob();
-    app.listen(env.PORT, () =>
-      console.log(`Server running on port ${env.PORT}`)
-    );
-  });
+async function bootstrapAdmin() {
+  try {
+    const adminEmail = "admin@example.com";
+    const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+    
+    if (!existingAdmin) {
+      const hashedPass = await bcrypt.hash("Password123", 10);
+      await User.create({
+        name: "Default Admin",
+        email: adminEmail,
+        password: hashedPass,
+        role: "admin"
+      } as any);
+      console.log("✅ Auto-Bootstrap: Admin account created (admin@example.com)");
+    } else {
+      console.log("ℹ️ Auto-Bootstrap: Admin account already exists");
+    }
+  } catch (error) {
+    console.error("❌ Auto-Bootstrap failed:", error);
+  }
 }
+
+// Start the server
+connectDB().then(async () => {
+  await bootstrapAdmin();
+  startFollowUpJob();
+  app.listen(env.PORT, () =>
+    console.log(`Server running on port ${env.PORT}`)
+  );
+}).catch(err => {
+  console.error("Failed to start server:", err);
+  process.exit(1);
+});
 
 export default app;
